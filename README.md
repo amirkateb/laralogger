@@ -23,7 +23,7 @@
 ## 📦 Installation
 
 ```bash
-composer require your-vendor/laralogger
+composer require amirkateb/laralogger
 php artisan vendor:publish --tag=laralogger-config
 php artisan migrate
 ```
