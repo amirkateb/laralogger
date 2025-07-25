@@ -13,15 +13,12 @@ class LaraloggerServiceProvider extends ServiceProvider
 
     public function boot(): void
     {
-        // Publish config
         $this->publishes([
             __DIR__ . '/../config/laralogger.php' => config_path('laralogger.php'),
         ], 'laralogger-config');
 
-        // Load migrations
         $this->loadMigrationsFrom(__DIR__ . '/../database/migrations');
 
-        // Load artisan commands
         if ($this->app->runningInConsole()) {
             $this->loadRoutesFrom(__DIR__ . '/../routes/console.php');
 
