@@ -1,33 +1,46 @@
-<?php
+use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Facades\App;
+use Illuminate\Support\Facades\Request;
+use Illuminate\Support\Facades\Queue;
+use Throwable;
 
-namespace Laralogger;
-
-use Illuminate\Support\ServiceProvider;
-
-class LaraloggerServiceProvider extends ServiceProvider
+public function boot(): void
 {
-    public function register(): void
-    {
-        $this->mergeConfigFrom(__DIR__ . '/../config/laralogger.php', 'laralogger');
+    $this->publishes([
+        __DIR__ . '/../config/laralogger.php' => config_path('laralogger.php'),
+    ], 'laralogger-config');
+
+    $this->loadMigrationsFrom(__DIR__ . '/../database/migrations');
+
+    if ($this->app->runningInConsole()) {
+        $this->loadRoutesFrom(__DIR__ . '/../routes/console.php');
+
+        $this->commands([
+            \Laralogger\Console\CleanupLogs::class,
+            \Laralogger\Console\TestErrorCommand::class,
+            \Laralogger\Console\ExportLogs::class,
+            \Laralogger\Console\ScanNginxLogs::class,
+        ]);
     }
 
-    public function boot(): void
-    {
-        $this->publishes([
-            __DIR__ . '/../config/laralogger.php' => config_path('laralogger.php'),
-        ], 'laralogger-config');
+    if (
+        Config::get('laralogger.active') &&
+        in_array(App::environment(), Config::get('laralogger.environments', []))
+    ) {
+        App::reportable(function (Throwable $e) {
+            $statusCode = method_exists($e, 'getStatusCode') ? $e->getStatusCode() : 500;
+            $logCodes = Config::get('laralogger.log_status_codes', []);
 
-        $this->loadMigrationsFrom(__DIR__ . '/../database/migrations');
+            if (!in_array($statusCode, $logCodes)) {
+                return;
+            }
 
-        if ($this->app->runningInConsole()) {
-            $this->loadRoutesFrom(__DIR__ . '/../routes/console.php');
+            $log = \Laralogger\Services\ErrorLogger::log(Request::instance(), $e, $statusCode);
 
-            $this->commands([
-                \Laralogger\Console\CleanupLogs::class,
-                \Laralogger\Console\TestErrorCommand::class,
-                \Laralogger\Console\ExportLogs::class,
-                \Laralogger\Console\ScanNginxLogs::class,
-            ]);
-        }
+            Queue::push(function () use ($log) {
+                \Laralogger\Services\NotificationManager::notify($log);
+                \Laralogger\Services\AIAnalyzer::analyze($log);
+            }, [], Config::get('laralogger.notifications.queue.name', 'default'));
+        });
     }
 }
