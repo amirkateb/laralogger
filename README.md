@@ -49,23 +49,44 @@ You can also define a custom notification class via:
 
 ---
 
-## 🔔 Notifications
+### 📣 Notification System
 
-Supports:
+Laralogger supports sending error notifications via multiple channels such as Telegram, email, or custom handlers. Notifications are triggered after each error is logged.
 
-- Telegram (via `bot_token` and `chat_id` from `config/services.php`)
-- Email (Laravel Mail)
-- Any custom notifier
+#### 🔧 Configuration
 
-All notifications can run in queue via:
+In `config/laralogger.php`, define the channels and options:
 
 ```php
-'queue' => [
-  'use_queue' => true,
-  'name' => 'notifications',
+'notification' => [
+    'enabled' => true,
+    'channels' => ['telegram', 'email'], // or ['custom']
+    'queue' => true,
+    'queue_name' => 'notifications',
+
+    // Optional: use your own notification class
+    'custom_notifier' => \App\Notifications\CustomErrorNotifier::class,
 ],
 ```
 
+#### 🧩 Built-in Notifiers
+
+- `Laralogger\Notifications\TelegramNotifier`
+- `Laralogger\Notifications\EmailNotifier`
+
+You can add your own class implementing `Laralogger\Contracts\NotifiableInterface` and plug it into the configuration.
+
+#### 🧪 Example
+
+```php
+use Laralogger\Models\ErrorLog;
+use Laralogger\Services\NotificationManager;
+
+$log = ErrorLog::latest()->first();
+NotificationManager::notify($log);
+```
+
+All notifiers support queue-based delivery if enabled.
 ---
 
 ### 🤖 AI-Powered Error Analysis
