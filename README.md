@@ -141,7 +141,44 @@ php artisan laralog:test --code=500         # Simulate an error
 php artisan laralog:cleanup --days=30       # Cleanup old logs
 php artisan laralog:scan-nginx-log          # Scan NGINX log for critical issues
 ```
+---
+### 🗃️ Log Storage Structure
 
+Laralogger stores all error logs in the database using the `error_logs` table. Each record includes detailed information about the exception, request, user, environment, and optional AI analysis.
+
+#### 📄 Schema Overview
+
+By default, Laralogger creates the following columns in the `error_logs` table:
+
+| Column              | Description                                      |
+|---------------------|--------------------------------------------------|
+| `id`               | Primary key                                      |
+| `message`          | Exception message                                |
+| `status_code`      | HTTP status code (e.g., 404, 500)                |
+| `exception_class`  | Class name of the exception                      |
+| `file`             | File path where exception occurred               |
+| `line`             | Line number                                      |
+| `url`              | Request URL                                      |
+| `method`           | HTTP method (GET, POST...)                       |
+| `user_id`          | ID of authenticated user (nullable)             |
+| `user_type`        | Guarded class (e.g., App\Models\User)            |
+| `headers`          | Full request headers (JSON)                      |
+| `payload`          | Request body (JSON)                              |
+| `ip`               | Request IP address                               |
+| `user_agent`       | User’s browser/device info                       |
+| `ai_analysis`      | Optional AI-generated explanation                |
+| `created_at`       | Timestamp of the error                           |
+
+#### 📍 Migration
+
+To publish and run the migration:
+
+```bash
+php artisan vendor:publish --tag=laralogger-migrations
+php artisan migrate
+```
+
+You can customize the migration to add extra columns if needed.
 ---
 
 ## 🧾 Log Schema
