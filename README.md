@@ -233,6 +233,43 @@ You may use this inside a scheduled task or create a background service like:
 You can extend this to monitor multiple log files as well.
 ---
 
+### 🔍 Webhook Logging and Route Monitoring
+
+Laralogger also supports **optional logging** of non-error HTTP requests such as:
+
+- 2xx (Successful) responses
+- 3xx (Redirects)
+- Specific routes (e.g., payment gateways, webhooks)
+
+This allows you to analyze traffic patterns, API behavior, or debug critical routes.
+
+#### 🔧 Configuration
+
+```php
+'request_monitoring' => [
+    'enabled' => true,
+    'log_success' => true,
+    'log_redirects' => true,
+    'only_routes' => [ // Leave empty to log all
+        'payment.callback',
+        'webhook.telegram',
+    ],
+    'exclude_methods' => ['OPTIONS'],
+],
+```
+
+#### 🗂️ Where Are They Logged?
+
+These logs are stored in the same `error_logs` table, with a `status_code` like `200`, `302`, etc. They are marked with a `non_exception` flag internally to differentiate.
+
+#### 📊 Use Cases
+
+- **Payment debugging**: Know what data was sent/received to/from gateways.
+- **Webhook tracing**: Know exactly when and what payload came in.
+- **Traffic insights**: Spot high-traffic or redirect-heavy endpoints.
+
+---
+
 ## 📄 License
 
 MIT © 2025 [AmirMohammad KatebSaber](mailto:amveks43@gmail.com)
