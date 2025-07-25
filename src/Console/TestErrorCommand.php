@@ -11,7 +11,7 @@ use Illuminate\Http\Request;
 class TestErrorCommand extends Command
 {
     protected $signature = 'laralog:test {--code=500}';
-    protected $description = 'تست کامل سیستم لاگ‌گیری با یک خطای شبیه‌سازی‌شده';
+    protected $description = 'Fully test the logger system with a simulated error';
 
     public function handle(): int
     {
@@ -31,7 +31,7 @@ class TestErrorCommand extends Command
         NotificationManager::notify($log);
         AIAnalyzer::analyze($log);
 
-        $this->info("✅ خطای تستی {$code} ثبت و پردازش شد.");
+        $this->info("✅ Simulated error {$code} has been logged and processed.");
 
         return self::SUCCESS;
     }
