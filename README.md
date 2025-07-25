@@ -193,29 +193,44 @@ Each log entry contains:
 
 ---
 
-## 💡 System Log Monitoring
+### 📛 Real-time Nginx Log Scanner
 
-Define paths and match patterns in `config/laralogger.php`, e.g.:
+Laralogger can optionally monitor your Nginx error logs in real-time to catch server-level issues such as 502 Bad Gateway or 504 Gateway Timeout, even before they reach Laravel.
+
+#### 🔧 Configuration
+
+In `config/laralogger.php`:
 
 ```php
-'system_logs' => [
-  'nginx' => [
+'nginx_monitoring' => [
     'enabled' => true,
-    'path' => '/var/log/nginx/error.log',
-    'pattern' => '/502 Bad Gateway/',
-    'send_notification' => true,
-    'store_in_db' => true,
-    'ai_analysis' => true,
-  ]
-]
+    'log_path' => '/var/log/nginx/error.log',
+    'patterns' => [
+        '502 Bad Gateway',
+        '504 Gateway Timeout',
+    ],
+    'interval' => 10, // in seconds
+],
 ```
 
-Schedule it in your app’s `App\Console\Kernel`:
+#### ⚙️ How It Works
 
-```php
-$schedule->command('laralog:scan-nginx-log')->everyMinute();
+- A background process (you can schedule it via cron or run as a systemd service) reads the last few lines of the Nginx error log.
+- If any pattern matches (e.g., 502), it creates a new error log and sends notifications immediately.
+
+#### 🧪 Example Command
+
+```bash
+php artisan laralog:watch-nginx
 ```
 
+You may use this inside a scheduled task or create a background service like:
+
+```bash
+* * * * * php /path/to/artisan laralog:watch-nginx >> /dev/null 2>&1
+```
+
+You can extend this to monitor multiple log files as well.
 ---
 
 ## 📄 License
