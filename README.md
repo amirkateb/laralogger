@@ -68,14 +68,49 @@ All notifications can run in queue via:
 
 ---
 
-## 🤖 AI Error Analysis
+### 🤖 AI-Powered Error Analysis
 
-Optional support for AI-based debugging:
+`Laralogger` provides optional support for AI-driven error diagnostics using OpenAI (e.g. GPT-4 or GPT-3.5). When enabled, it automatically sends a summarized error context to the selected model and stores the response (suggested cause/fix) in your database.
 
-- Requires OpenAI API key
-- Supports `gpt-3.5-turbo`, `gpt-4`, or any model
-- Saves output in `ai_analysis` field of log
+#### 🔧 Enable AI Analysis
 
+In `config/laralogger.php`, update the `ai` section:
+
+```php
+'ai' => [
+    'enabled' => true,
+    'provider' => 'openai',
+    'api_key' => env('LARALOGGER_AI_API_KEY'),
+    'model' => 'gpt-4', // or 'gpt-3.5-turbo'
+    'prompt' => "You are an expert Laravel backend developer. Given this error, explain the root cause and suggest a fix:\n\n{{error}}",
+    'queue' => true, // Run analysis via queue
+    'queue_name' => 'ai-analysis',
+],
+```
+
+Then, set the environment variable:
+
+```
+LARALOGGER_AI_API_KEY=sk-xxxxxx
+```
+
+> ☝️ The `prompt` supports `{{error}}` as a placeholder that will be replaced with error details automatically.
+
+#### 📦 Output
+
+- The AI-generated explanation will be saved to the `ai_analysis` field in the `error_logs` table.
+- If queue is enabled, analysis will be processed asynchronously.
+- You can customize the `prompt` to fit your use-case or tone.
+
+#### 🧪 Example
+
+Run this to test:
+
+```bash
+php artisan laralog:test --code=500
+```
+
+Check your database — you should see an AI-generated explanation added to the test log entry.
 ---
 
 ## 🧪 Artisan Commands
