@@ -1,5 +1,5 @@
 {
-  "name": "vendor/laralogger",
+  "name": "amirkateb/laralogger",
   "description": "Advanced error logger for Laravel with AI analysis and Telegram/Email notifications.",
   "type": "library",
   "license": "MIT",
