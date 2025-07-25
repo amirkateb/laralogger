@@ -1,0 +1,30 @@
+{
+  "name": "vendor/laralogger",
+  "description": "Advanced error logger for Laravel with AI analysis and Telegram/Email notifications.",
+  "type": "library",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "AmirMohammad KatebSaber",
+      "email": "amveks43@gmail.com"
+    }
+  ],
+  "require": {
+    "php": ">=8.1",
+    "illuminate/support": "^10.0 || ^11.0"
+  },
+  "autoload": {
+    "psr-4": {
+      "Laralogger\\": "src/"
+    }
+  },
+  "extra": {
+    "laravel": {
+      "providers": [
+        "Laralogger\\LaraloggerServiceProvider"
+      ]
+    }
+  },
+  "minimum-stability": "dev",
+  "prefer-stable": true
+}
