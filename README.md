@@ -2,7 +2,7 @@
 
 **Laralogger** is a powerful, queue-ready Laravel error logging package that automatically captures HTTP 4xx/5xx errors and system-level issues, logs them to the database, sends customizable notifications (Telegram, Email), and even analyzes them using AI (GPT).
 
-📄 [Read this in فارسی (Persian)](README.fa.md)
+📄 [مطالعه داکیومنت فارسی](README.fa.md)
 
 ---
 
