@@ -1,6 +1,5 @@
 # Laralogger
 ![GitHub Release](https://img.shields.io/github/v/release/amirkateb/laralogger)
-![GitHub Downloads (all assets, all releases)](https://img.shields.io/github/downloads/amirkateb/laralogger/total)
 ![GitHub License](https://img.shields.io/github/license/amirkateb/laralogger)
 
 **Laralogger** is a powerful, queue-ready Laravel error logging package that automatically captures HTTP 4xx/5xx errors and system-level issues, logs them to the database, sends customizable notifications (Telegram, Email), and even analyzes them using AI (GPT).
