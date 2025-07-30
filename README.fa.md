@@ -1,6 +1,5 @@
 # لارالاگر (Laralogger)
 ![GitHub Release](https://img.shields.io/github/v/release/amirkateb/laralogger)
-![GitHub Downloads (all assets, all releases)](https://img.shields.io/github/downloads/amirkateb/laralogger/total)
 ![GitHub License](https://img.shields.io/github/license/amirkateb/laralogger)
 **Laralogger** یک پکیج قدرتمند برای لاگ‌گیری خطا در لاراول است که به‌صورت خودکار خطاهای HTTP سری ۴۰۰ و ۵۰۰ را ثبت می‌کند، نوتیفیکیشن‌های هوشمند به تلگرام و ایمیل می‌فرستد، خطاهای سیستمی مانند Nginx را بررسی می‌کند، و در صورت نیاز، آن‌ها را با استفاده از GPT تحلیل می‌کند.
 
